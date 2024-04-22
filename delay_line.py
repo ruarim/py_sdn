@@ -1,7 +1,8 @@
 import numpy as np
+from constants import MAX_DELAY
 
 class DelayLine:
-    def __init__(self, size: int):
+    def __init__(self, size=MAX_DELAY):
         self.size = size
         self.buffer = np.zeros(size)
         self.index = 0
