@@ -10,7 +10,7 @@ from scattering_junction import ScatteringJunction
 from propigation_line import PropigationLine
 from source import Source
 from mic import Mic
-from constants import SIGNAL_LENGTH, FS
+from config import SIGNAL_LENGTH, FS, WALL_ABSORPTION, OUTPUT_TO_FILE
 from utils import write_array_to_wav
 
 # temp utility function for creating random reflections
@@ -41,7 +41,7 @@ mic_location = Point3D(0.4, 0.1, 0.4)
 mic = Mic(mic_location)
 
 # create direct path
-direct_path = PropigationLine(start=source, end=mic)
+direct_path = PropigationLine(start=source, end=mic, absorbing=True)
 source.add_direct_path(direct_path)
 mic.add_direct_path(direct_path)
 
@@ -51,21 +51,28 @@ mic.add_direct_path(direct_path)
 # which are inputs for all other junction
 M = 6 # reflections 
 junctions: list[ScatteringJunction] = []
-wall_attenuation = 0.9
+# early_reflections = [
+#     Point3D(),
+#     Point3D(),
+#     Point3D(),
+#     Point3D(),
+#     Point3D(),
+#     Point3D(),
+# ]
 
 # for each refelection create a scattering junction
 for i in range(M):
     junction_loc = rand_point(0, room_dims[0])
-    junction = ScatteringJunction(junction_loc, source, mic, wall_attenuation=wall_attenuation)
+    junction = ScatteringJunction(junction_loc, source, mic, alpha=WALL_ABSORPTION)
     junctions.append(junction)
 
 # connect the scattering junctions
 for i in range(M):    
     # connect source to junction
-    source_line = PropigationLine(start=source, end=junctions[i])
+    source_line = PropigationLine(start=source, end=junctions[i], absorbing=True)
     source.add_to_junction(source_line)
     # connect junction to mic
-    mic_line = PropigationLine(start=junctions[i], end=mic)
+    mic_line = PropigationLine(start=junctions[i], end=mic, absorbing=True)
     mic.add_from_junction(mic_line)
     # connect refelection to all other reflections via propigations lines
     for j in range(M):
@@ -105,21 +112,22 @@ for s in range(len(signal_in)):
         source_sample = source.propigation_lines[i].sample_out()
         # apply scattering
         out, sample_to_mic = junctions[i].scatter_in(source_sample)
-
         junctions[i].scatter_out(out)
-                
         # push scattered sample to microphone prop line
         mic.propigation_lines[i].sample_in(sample_to_mic)
-        # sum signal from mic propigation lines
+        # sum signal from mic propigation lines - prefer a call to mic.process
         output += mic.propigation_lines[i].sample_out()
                 
+    # model the microphone here
+    # output = mic.process() - remove summation of mic sample out above 
     # output the sample at current index
     signal_out[s] = output + direct_path.sample_out()
 
 print("writing to file...")
 # add other parameters to file name - source, mic, room dims etc
-file_name = f"IR_junctions:{M}_wall-attenuation:{wall_attenuation}"
-write_array_to_wav(file_name, signal_out, FS)
+file_name = f"IR_junctions:{M}_wall-attenuation:{WALL_ABSORPTION}_fs:{FS}"
+
+if(OUTPUT_TO_FILE): write_array_to_wav(file_name, signal_out, FS)
 
 print("plotting...")
 # plot impulse response

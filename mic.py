@@ -17,3 +17,7 @@ class Mic:
     def add_direct_path(self, prop_line: PropigationLine):
         self.direct_path = prop_line
     
+    # def output or process
+    # function to model the microphone directivity
+        # for all prop line and direct path add weighting
+    

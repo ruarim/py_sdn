@@ -1,5 +1,5 @@
 import numpy as np
-from constants import MAX_DELAY
+from config import MAX_DELAY
 
 class DelayLine:
     def __init__(self, size=MAX_DELAY):

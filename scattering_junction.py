@@ -1,17 +1,18 @@
 import numpy as np
+from math import sqrt
 from point_3D import Point3D
 from source import Source
 from mic import Mic
 
 class ScatteringJunction:    
     # add arg types
-    def __init__(self, location: Point3D, source: Source, mic: Mic, wall_attenuation=1.0):
+    def __init__(self, location: Point3D, source: Source, mic: Mic, alpha=1.0):
         self.propigation_in = []
         self.propigation_out = []
         self.location = location
         self.source = source
         self.mic = mic
-        self.wall_attenuation = wall_attenuation
+        self.absorption = sqrt(1-alpha)
         
         # wall filter
     
@@ -26,10 +27,8 @@ class ScatteringJunction:
         sample_to_mic = 0.0
         samples_out = np.zeros(M)
         
-        # for each prop out
         for i in range(M): # output prop lines
             sample_out = 0.0
-             # for each prop in
             for j in range(M): # input prop lines
                 sample_in = samples_in[j] + (source_sample / 2)
                 # isotropic scattering coefficient
@@ -41,7 +40,7 @@ class ScatteringJunction:
             # filter sample (frequnecy dependant absorption) and attenuation (non frequency dependant absorption)
             
             # to neighbour junctions
-            samples_out[i] = sample_out * self.wall_attenuation
+            samples_out[i] = sample_out * self.absorption
                        
             # to mic prop line
             sample_to_mic += (2/M)*sample_out
