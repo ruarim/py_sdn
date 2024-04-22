@@ -1,7 +1,7 @@
 from scipy.io.wavfile import write
 from datetime import datetime
 
-# read sample file for processing
+# read file for processing
 
 def write_array_to_wav(file_name: str, audio_data, fs):
     # add create output folder if it does not exist
