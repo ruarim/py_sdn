@@ -90,6 +90,7 @@ signal_out = np.zeros(SIGNAL_LENGTH, dtype=np.float32)
 # create unit impulse
 signal_in[0] = 1.0
 
+print("processing samples...")
 # process the input signal
 for s in range(len(signal_in)):
     sample = signal_in[s]
@@ -103,9 +104,9 @@ for s in range(len(signal_in)):
         # get sample from source propline
         source_sample = source.propigation_lines[i].sample_out()
         # apply scattering
-        out, sample_to_mic = junctions[i].scatter_out(source_sample)
+        out, sample_to_mic = junctions[i].scatter_in(source_sample)
 
-        junctions[i].scatter_in(out)
+        junctions[i].scatter_out(out)
                 
         # push scattered sample to microphone prop line
         mic.propigation_lines[i].sample_in(sample_to_mic)
@@ -115,10 +116,12 @@ for s in range(len(signal_in)):
     # output the sample at current index
     signal_out[s] = output + direct_path.sample_out()
 
+print("writing to file...")
 # add other parameters to file name - source, mic, room dims etc
 file_name = f"IR_junctions:{M}_wall-attenuation:{wall_attenuation}"
 write_array_to_wav(file_name, signal_out, FS)
 
+print("plotting...")
 # plot impulse response
 plt.figure(figsize=(10, 4))
 plt.plot(signal_out)

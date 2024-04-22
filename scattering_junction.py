@@ -15,24 +15,24 @@ class ScatteringJunction:
         
         # wall filter
     
-    def scatter_out(self, source_sample):
+    # get the sample from neigbour junctions
+    # output an array of scattered values
+    def scatter_in(self, source_sample):
         # get reflection order
         M = len(self.propigation_out)
-        # samples in from neighbours
+        # read samples in from neighbours
         samples_in = [s.sample_out() for s in self.propigation_in]
+        # output samples
         sample_to_mic = 0.0
         samples_out = np.zeros(M)
         
         # for each prop out
-        for i in range(M):
-            prop_out = self.propigation_out[i]
+        for i in range(M): # output prop lines
             sample_out = 0.0
              # for each prop in
-            for j in range(M):
+            for j in range(M): # input prop lines
                 sample_in = samples_in[j] + (source_sample / 2)
-                prop_in = self.propigation_in[j]
                 # isotropic scattering coefficient
-                # if out == in
                 if i == j: a = 2 / M - 1.0 # less to diagonal
                 else: a = 2 / M
                 
@@ -48,10 +48,11 @@ class ScatteringJunction:
                     
         return samples_out, sample_to_mic
     
-    def scatter_in(self, samples):
-        M = len(self.propigation_in)
+    def scatter_out(self, samples):
+        M = len(self.propigation_out)
+        assert len(samples) == M
         for i in range(M):
-            self.propigation_in[i].sample_in(samples[i])
+            self.propigation_out[i].sample_in(samples[i])
     
     def add_in(self, prop_in):
         self.propigation_in.append(prop_in)
