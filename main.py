@@ -4,7 +4,7 @@ from scattering_junction import ScatteringJunction
 from propigation_line import PropigationLine
 from source import Source
 from mic import Mic
-from config import SIGNAL_LENGTH, FS, WALL_ABSORPTION, OUTPUT_TO_FILE, ROOM_DIMS, SOURCE_LOC, MIC_LOC, BURST_LENGTH, TEST_SIGNAL
+from config import SIGNAL_LENGTH, FS, WALL_ABSORPTION, OUTPUT_TO_FILE, ROOM_DIMS, SOURCE_LOC, MIC_LOC, BURST_LENGTH, TEST_SIGNAL, PLOT
 from utils import write_array_to_wav, plot_signal, plot_in_vs_out
 from reflections import find_reflections
 from signals import test_signal, zeros
@@ -103,11 +103,13 @@ for s in range(len(signal_in)):
     # output the sample at current index
     signal_out[s] = output + direct_path.sample_out()
 
-print("writing to file...")
-file_name = f"IR_junctions:{M}_wall-attenuation:{WALL_ABSORPTION}_fs:{FS}_room:{ROOM_DIMS}_source:{SOURCE_LOC}_mic:{MIC_LOC}"
-if(OUTPUT_TO_FILE): write_array_to_wav(file_name, signal_out, FS)
+if(OUTPUT_TO_FILE): 
+    print("writing to file...")
+    file_name = f"IR_junctions:{M}_wall-attenuation:{WALL_ABSORPTION}_fs:{FS}_room:{ROOM_DIMS}_source:{SOURCE_LOC}_mic:{MIC_LOC}"
+    write_array_to_wav(file_name, signal_out, FS)
 
-print("plotting...")
-plot_signal(signal_in, title="Input signal")
-plot_signal(signal_out, title=f"Room Dimensions: {ROOM_DIMS}, Source: {SOURCE_LOC}, Mic: {MIC_LOC}, wall absorption: {WALL_ABSORPTION}")
-plot_in_vs_out(signal_in, signal_out)
+if(PLOT):
+    print("plotting...")
+    plot_signal(signal_in, title="Input signal")
+    plot_signal(signal_out, title=f"Room Dimensions: {ROOM_DIMS}, Source: {SOURCE_LOC}, Mic: {MIC_LOC}, wall absorption: {WALL_ABSORPTION}")
+    plot_in_vs_out(signal_in, signal_out)
