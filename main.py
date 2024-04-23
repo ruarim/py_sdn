@@ -55,8 +55,8 @@ for i in range(M):
     mic_line = PropigationLine(start=junctions[i], end=mic)
     mic_attenuation = 1 / (1 + (mic_line.distance / source_line.distance))
     mic_line.attenuation = min(mic_attenuation, 1)
-    
     mic.add_from_junction(mic_line)
+    
     # connect refelection to all other reflections via propigations lines
     for j in range(M):
         # ignore diagonal - dont connect node to itself
@@ -86,8 +86,8 @@ for s in range(len(signal_in)):
     sample = signal_in[s]
     # add sample to direct path
     direct_path.sample_in(sample)
-    
     output = 0.0
+    
     for i in range(M):
         # push sample to source prop line
         source.propigation_lines[i].sample_in(sample) 
