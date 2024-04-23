@@ -20,7 +20,7 @@ class PropigationLine:
         self.end = end
         self.distance = self.euclid_dist()
         self.attenuation = 1.0
-                
+        
         # filter for frequnecy dependant absorption
             
     def sample_in(self, sample: float):

@@ -1,7 +1,8 @@
 from scipy.io.wavfile import write
 from datetime import datetime
+from matplotlib import pyplot as plt
 
-# read file for processing
+# add read file for processing function
 
 def write_array_to_wav(file_name: str, audio_data, fs):
     # add create output folder if it does not exist
@@ -12,8 +13,7 @@ def write_array_to_wav(file_name: str, audio_data, fs):
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
 
-# temp utility function for creating random reflections
-# def rand_point(min, max):
-#     return Point3D(randrange(min, max), 
-#                    randrange(min, max), 
-#                    randrange(min, max),)
+def plot_signal(signal):
+    plt.figure(figsize=(10, 4))
+    plt.plot(signal)
+    plt.show()
