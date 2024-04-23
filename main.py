@@ -34,9 +34,6 @@ mic.add_direct_path(direct_path)
 # find early reflections in shoebox room
 early_reflections = find_reflections(ROOM_DIMS, source.location)
 
-for i in early_reflections:
-    print(i.x, i.y, i.z)
-
 M = len(early_reflections)
 junctions: list[ScatteringJunction] = []
 
