@@ -19,7 +19,6 @@ def plot_signal(signal, title):
     plt.plot(signal)
     plt.show()
     
-
 def plot_in_vs_out(signal_in, signal_out, title="Input vs Output signals"):
     plt.figure(figsize=(10, 4))
     plt.title(title)
