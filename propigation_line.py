@@ -12,7 +12,7 @@ from utils import clamp
 # currently adding typing to this class is limited by circular imports
 # possibly create types / interfaces module
 class PropigationLine:    
-    def __init__(self, start, end, fs=FS, c=SPEED_OF_SOUND, absorbing=False):
+    def __init__(self, start, end, fs=FS, c=SPEED_OF_SOUND):
         self.fs = fs
         self.c = c
         self.delay_line = DelayLine()
@@ -20,12 +20,7 @@ class PropigationLine:
         self.end = end
         self.distance = self.euclid_dist()
         self.attenuation = 1.0
-        
-        # apply attenuation to source, mic and direct path proplines only
-        if(absorbing):
-            # (1 + (junction mic distance / source junction distance))
-            self.attenuation = clamp(1 / self.distance, 0, 1)
-        
+                
         # filter for frequnecy dependant absorption
             
     def sample_in(self, sample: float):
@@ -34,10 +29,7 @@ class PropigationLine:
     def sample_out(self) -> float:
         delay = self.distance_to_delay()
         return self.delay_line.read(delay) * self.attenuation 
-    
-    def set_attenuation(self):
-        pass
-        
+            
     # get the euclidean distance between the start and end junctions
     def euclid_dist(self):
         diff = self.vector_diff(self.start.location, self.end.location)
