@@ -7,7 +7,6 @@ from delay_line import DelayLine
 from config import FS, SPEED_OF_SOUND
 from point_3D import Point3D
 from math import sqrt, floor
-from utils import clamp
 
 # currently adding typing to this class is limited by circular imports
 # possibly create types / interfaces module

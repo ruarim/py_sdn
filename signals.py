@@ -2,6 +2,9 @@ import numpy as np
 from math import floor
 from random import uniform
 
+def zeros(length):
+    return np.zeros(length, dtype=np.float32) 
+
 def unit_impulse(signal_length, gain):
     signal = zeros(signal_length)
     signal[0] = gain
@@ -17,9 +20,6 @@ def noise_burst(signal_length, burst_secs, fs, gain):
     
     return signal
         
-def zeros(length):
-    return np.zeros(length, dtype=np.float32) 
-
 def test_signal(choice, signal_length, burst_secs, fs, gain=1.0):
     if choice == "unit": return unit_impulse(signal_length, gain)
     if choice == "noise": return noise_burst(signal_length, burst_secs, fs, gain)
