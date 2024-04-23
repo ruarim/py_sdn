@@ -12,7 +12,7 @@ from signals import test_signal, zeros, signal_duplicator
 source_location = Point3D(SOURCE_LOC[0], SOURCE_LOC[1], SOURCE_LOC[2])
 mic_location = Point3D(MIC_LOC[0], MIC_LOC[1], MIC_LOC[2])
 early_reflections = find_reflections(ROOM_DIMS, source_location)
-sdn = Network(early_reflections, source_location, mic_location, WALL_ABSORPTION) 
+sdn = Network(early_reflections, source_location, mic_location, WALL_ABSORPTION, FS) 
 
 # input / output arrays
 signal_in  = test_signal(TEST_SIGNAL, SIGNAL_LENGTH, BURST_LENGTH, FS)
@@ -31,8 +31,8 @@ for s in range(len(signal_in)):
     # to model stereo source and mic should extra nodes be added
     # or should the simulation be run for both channels with modeling of directivity via gain at output
     for c in range(channels):
-        level = CHANNEL_LEVELS[c]
         # model mic orientation with left right gain
+        level = CHANNEL_LEVELS[c]
         stereo_out[s][c] = signal_out[s] * level
 
 # output and plot the results
