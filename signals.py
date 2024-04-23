@@ -25,3 +25,7 @@ def test_signal(choice, signal_length, burst_secs, fs, gain=1.0):
     if choice == "noise": return noise_burst(signal_length, burst_secs, fs, gain)
     # if "pulse": return pulse
     # if "file": return sample_file
+
+def signal_duplicator(signal):
+    n = 2   
+    return np.column_stack([signal] * n)

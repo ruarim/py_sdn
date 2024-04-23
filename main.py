@@ -1,13 +1,15 @@
+# config values
+from config import SIGNAL_LENGTH, FS, WALL_ABSORPTION, OUTPUT_TO_FILE, ROOM_DIMS, SOURCE_LOC, MIC_LOC, BURST_LENGTH, TEST_SIGNAL, PLOT, CHANNEL_LEVELS
+
 # classes and utilites
 from point_3D import Point3D
 from scattering_junction import ScatteringJunction
 from propigation_line import PropigationLine
 from source import Source
 from mic import Mic
-from config import SIGNAL_LENGTH, FS, WALL_ABSORPTION, OUTPUT_TO_FILE, ROOM_DIMS, SOURCE_LOC, MIC_LOC, BURST_LENGTH, TEST_SIGNAL, PLOT
 from utils import write_array_to_wav, plot_signal, plot_in_vs_out
 from reflections import find_reflections
-from signals import test_signal, zeros
+from signals import test_signal, zeros, signal_duplicator
 
 # create source
 source_location = Point3D(SOURCE_LOC[0], SOURCE_LOC[1], SOURCE_LOC[2])
@@ -23,10 +25,6 @@ direct_path.attenuation = min(1 / direct_path.distance, 1)
 source.add_direct_path(direct_path)
 mic.add_direct_path(direct_path)
 
-# for each scattering junction create M bidirectional propigation lines
-# where M = number of reflections 
-# each junction has M output prop lines which are inputs for all other junction
-
 # find early reflections in shoebox room
 early_reflections = find_reflections(ROOM_DIMS, source.location)
 
@@ -39,7 +37,7 @@ for i in range(M):
     junction = ScatteringJunction(junction_loc, source, mic, alpha=WALL_ABSORPTION)
     junctions.append(junction)
 
-# connect the scattering junctions
+# connect the scattering junctions with waveguides (bidirectional delay lines)
 for i in range(M):    
     # connect source to junction
     source_line = PropigationLine(start=source, end=junctions[i])
@@ -53,7 +51,7 @@ for i in range(M):
     mic_line.attenuation = min(mic_attenuation, 1)
     mic.add_from_junction(mic_line)
     
-    # connect refelection to all other reflections via propigations lines
+    # connect junctions to all other junctions via propigations lines
     for j in range(M):
         # ignore diagonal - dont connect node to itself
         if i == j: continue
@@ -64,15 +62,13 @@ for i in range(M):
         junctions[j].add_in(prop_line)
 
 # run the simulation 
-# the source writes to propigation lines connected to all junctions and the microphone
-# the junctions write to and read from all other junctions via bidirectional propigation lines (waveguides)
-# the junctions write to propigation lines connected to the mic
-# the mic reads from propigation lines connected to the junction
-# and the mic reads from the direct path propigation line
 
 # input / output arrays
 signal_in  = test_signal(TEST_SIGNAL, SIGNAL_LENGTH, BURST_LENGTH, FS)
+# stereo_in = signal_duplicator(signal_in)
 signal_out = zeros(SIGNAL_LENGTH)
+channels   = len(CHANNEL_LEVELS)
+stereo_out = signal_duplicator(signal_out)
 
 print("processing samples...")
 # process the input signal
@@ -98,15 +94,19 @@ for s in range(len(signal_in)):
     # model the microphone here
     # output = mic.process() - remove summation of mic sample_out above
     
-    # model mic orientation with left right gain
+    signal_out[s] = output + direct_path.sample_out()
     
     # output the sample at current index
-    signal_out[s] = output + direct_path.sample_out()
+    for c in range(channels):
+        level = CHANNEL_LEVELS[c]
+        # model mic orientation with left right gain
+        stereo_out[s][c] = signal_out[s] * level
 
+# output and plot the results
 if(OUTPUT_TO_FILE): 
     print("writing to file...")
     file_name = f"IR_junctions:{M}_wall-attenuation:{WALL_ABSORPTION}_fs:{FS}_room:{ROOM_DIMS}_source:{SOURCE_LOC}_mic:{MIC_LOC}"
-    write_array_to_wav(file_name, signal_out, FS)
+    write_array_to_wav(file_name, stereo_out, FS)
 
 if(PLOT):
     print("plotting...")
