@@ -9,4 +9,5 @@ WALL_ABSORPTION = 0.25
 ROOM_DIMS = [7,7,7]
 SOURCE_LOC=[0.3, 0.5, 0.9]
 MIC_LOC=[2.4, 2.1, 2.4]
+TEST_SIGNAL="unit" # unit, noise, pulse, sample
 BURST_LENGTH=0.1

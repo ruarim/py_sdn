@@ -1,16 +1,13 @@
-# librays deps
-import numpy as np
-
 # classes and utilites
 from point_3D import Point3D
 from scattering_junction import ScatteringJunction
 from propigation_line import PropigationLine
 from source import Source
 from mic import Mic
-from config import SIGNAL_LENGTH, FS, WALL_ABSORPTION, OUTPUT_TO_FILE, ROOM_DIMS, SOURCE_LOC, MIC_LOC,BURST_LENGTH
-from utils import write_array_to_wav, plot_signal
+from config import SIGNAL_LENGTH, FS, WALL_ABSORPTION, OUTPUT_TO_FILE, ROOM_DIMS, SOURCE_LOC, MIC_LOC, BURST_LENGTH, TEST_SIGNAL
+from utils import write_array_to_wav, plot_signal, plot_in_vs_out
 from reflections import find_reflections
-from signals import unit_impulse, noise_burst, zeros
+from signals import test_signal, zeros
 
 # create source
 source_location = Point3D(SOURCE_LOC[0], SOURCE_LOC[1], SOURCE_LOC[2])
@@ -74,8 +71,7 @@ for i in range(M):
 # and the mic reads from the direct path propigation line
 
 # input / output arrays
-signal_in  = unit_impulse(SIGNAL_LENGTH)
-#signal_in  = noise_burst(SIGNAL_LENGTH, BURST_LENGTH, FS)
+signal_in  = test_signal(TEST_SIGNAL, SIGNAL_LENGTH, BURST_LENGTH, FS)
 signal_out = zeros(SIGNAL_LENGTH)
 
 print("processing samples...")
@@ -112,7 +108,6 @@ file_name = f"IR_junctions:{M}_wall-attenuation:{WALL_ABSORPTION}_fs:{FS}_room:{
 if(OUTPUT_TO_FILE): write_array_to_wav(file_name, signal_out, FS)
 
 print("plotting...")
-# plot input
-plot_signal(signal_in)
-# plot output
-plot_signal(signal_out)
+plot_signal(signal_in, title="Input signal")
+plot_signal(signal_out, title=f"Room Dimensions: {ROOM_DIMS}, Source: {SOURCE_LOC}, Mic: {MIC_LOC}, wall absorption: {WALL_ABSORPTION}")
+plot_in_vs_out(signal_in, signal_out)
