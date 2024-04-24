@@ -1,5 +1,9 @@
 # config values
-from config import SIGNAL_LENGTH, FS, WALL_ABSORPTION, OUTPUT_TO_FILE, ROOM_DIMS, SOURCE_LOC, MIC_LOC, BURST_LENGTH, TEST_SIGNAL, PLOT, CHANNEL_LEVELS
+from config import (
+    SIGNAL_LENGTH, FS, WALL_ABSORPTION, OUTPUT_TO_FILE, 
+    ROOM_DIMS, SOURCE_LOC, MIC_LOC, BURST_LENGTH, 
+    TEST_SIGNAL, PLOT, CHANNEL_LEVELS, DATA_DIR, FILE_NAME
+)
 
 # classes and utilites
 from point_3D import Point3D
@@ -15,7 +19,7 @@ early_reflections = find_reflections(ROOM_DIMS, source_location)
 sdn = Network(early_reflections, source_location, mic_location, WALL_ABSORPTION, FS) 
 
 # input / output arrays
-signal_in  = test_signal(TEST_SIGNAL, SIGNAL_LENGTH, BURST_LENGTH, FS)
+signal_in  = test_signal(TEST_SIGNAL, SIGNAL_LENGTH, FS, BURST_LENGTH, data_dir=DATA_DIR, file_name=FILE_NAME)
 signal_out = zeros(SIGNAL_LENGTH)
 channels   = len(CHANNEL_LEVELS)
 stereo_out = signal_duplicator(signal_out)

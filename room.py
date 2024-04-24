@@ -1,5 +1,7 @@
-from point_3D import Point3D
 # defines the geometry of a room
+# and its frequency dependant and independant wall absorption coefficients
+
+from point_3D import Point3D
 
 class Room:
     def __init__(self, x: float, y: float, z: float, source: Point3D, mic: Point3D): 

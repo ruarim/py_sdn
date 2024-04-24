@@ -69,7 +69,7 @@ class Network:
             samples_out.append(mic_sample)
                      
         # model microphone directivity pattern here
-        # output = mic.process(sample)
+        # mic_out = mic.process(samples_out)
         
         return sum(samples_out) + self.direct_path.sample_out()
         

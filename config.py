@@ -9,14 +9,16 @@ SPEED_OF_SOUND = 343.0
 
 # parameters
 WALL_ABSORPTION = 0.25 # extend to be defined for each wall
-ROOM_DIMS = [5,7,5]
+ROOM_DIMS = [10,7,2]
 SOURCE_LOC = [0.3, 0.5, 0.9]
 MIC_LOC = [2.4, 2.1, 2.4]
 CHANNEL_LEVELS = [1.0, 1.0] # left, right - use azimuth instead
 
 # test signal
-TEST_SIGNAL = "unit" # unit, noise, pulse, sample
+TEST_SIGNAL = "file" # unit, noise, pulse, sample
 BURST_LENGTH = 0.01
+DATA_DIR = "_samples/"
+FILE_NAME = "Clap 808 Color 03.wav"
 
 # outputs
 OUTPUT_TO_FILE = False
