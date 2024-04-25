@@ -29,12 +29,17 @@ def file(data_dir, file_name):
     return data
 
 # return fs depenant on signal type 
-def test_signal(choice, signal_length, fs,burst_secs=0.1, gain=1.0, data_dir="", file_name=""):
-    if choice == "unit": return unit_impulse(signal_length, gain)
-    if choice == "noise": return noise_burst(signal_length, burst_secs, fs, gain)
-    if choice == "file": return file(data_dir, file_name) # not returning fs for now
+def test_signal(choice, signal_length, fs,burst_secs=0.1, gain=1.0, data_dir="", file_name="", channels=1):
+    if choice == "unit": 
+        signal = unit_impulse(signal_length, gain)
+    if choice == "noise": 
+        signal = noise_burst(signal_length, burst_secs, fs, gain)
+    if choice == "file": 
+        signal = file(data_dir, file_name) # not returning fs for now
     # if "pulse": return pulse with harmonic content (sine, square, tri...)
+    
+    if channels > 1: return stack(signal, channels) 
+    else: return signal
 
-def signal_duplicator(signal):
-    n = 2   
+def stack(signal, n=2):
     return np.column_stack([signal] * n)

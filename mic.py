@@ -4,7 +4,6 @@
 from point_3D import Point3D
 from propigation_line import PropigationLine
 
-# source and mic are very similar and could be refactored
 class Mic:  
     def __init__(self, location: Point3D):
         self.propigation_lines: list[PropigationLine] = [] # junction -> mic
@@ -18,6 +17,6 @@ class Mic:
         self.direct_path = prop_line
     
     # def output or process
-    # function to model the microphone directivity
+    # function to model the microphone directivity - or should omni-directional be assumed
         # for all prop line and direct path add weighting
     
