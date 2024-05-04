@@ -6,7 +6,7 @@ def plot_signal(signal, title):
     plt.figure(figsize=(10, 4))
     plt.title(title)
     plt.plot(signal)
-    plt.ylabel('Amplitude Linear') # units
+    plt.ylabel('Amplitude Linear')
     plt.xlabel('Samples')
     plt.show()
     
