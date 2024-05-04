@@ -11,7 +11,7 @@ from network import Network
 from utils import write_array_to_wav
 from reflections import find_reflections
 from signals import test_signal, zeros, stack
-from plot import plot_signal, plot_in_vs_out, plot_frequnecy_response
+from plot import plot_signal, plot_in_vs_out, plot_frequnecy_response, plot_T60
 from evaluation import T60_evaluation
 
 # setup the delay network
@@ -62,6 +62,7 @@ if(PLOT):
     sabine, eyring = T60_evaluation(ROOM_DIMS, WALL_ABSORPTION)
     config_params = f"Room Dimensions: {ROOM_DIMS}, Source: {SOURCE_LOC}, Mic: {MIC_LOC}, wall absorption: {WALL_ABSORPTION}"
     plot_signal(mono_in, title="Input signal")
-    plot_signal(mono_out, title=config_params)
-    plot_in_vs_out(mono_in, mono_out, sabine, FS)
+    plot_signal(mono_out, title=config_params) 
+    plot_in_vs_out(mono_in, mono_out)
+    plot_T60(mono_out, sabine, eyring, FS, title="T60 - " + config_params)
     plot_frequnecy_response(mono_out, title=config_params)
