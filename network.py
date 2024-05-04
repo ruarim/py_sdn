@@ -15,8 +15,7 @@ class Network:
         self.direct_path = PropigationLine(start=self.source, end=self.mic, fs=fs)
         self.direct_path.attenuation = min(1 / self.direct_path.distance, 1)
         self.source.add_direct_path(self.direct_path)
-        self.mic.add_direct_path(self.direct_path)   
-
+        self.mic.add_direct_path(self.direct_path)  
         self.junctions: list[ScatteringJunction] = []
         
         # for each refelection create a scattering junction
@@ -64,10 +63,10 @@ class Network:
             self.junctions[i].scatter_out(junction_samples)
             # push scattered sample to microphone prop line
             self.mic.propigation_lines[i].sample_in(sample_to_mic)
-            # sum signal from mic propigation lines - prefer a call to mic.process
+            # collect output samples
             mic_sample = self.mic.propigation_lines[i].sample_out()
             samples_out.append(mic_sample)
-                     
+        
         # model microphone directivity pattern here
         # mic_out = mic.process(samples_out)
         

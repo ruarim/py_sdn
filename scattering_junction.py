@@ -59,5 +59,3 @@ class ScatteringJunction:
     def add_out(self, prop_out):
         self.propigation_out.append(prop_out)
         
-        
-       

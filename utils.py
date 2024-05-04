@@ -1,7 +1,6 @@
 from scipy.io.wavfile import write, read
 import scipy.io
 from datetime import datetime
-from matplotlib import pyplot as plt
 from os import path 
 import numpy as np
 import warnings
@@ -33,17 +32,3 @@ def write_array_to_wav(file_name: str, audio_data, fs):
     
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
-
-def plot_signal(signal, title):
-    plt.figure(figsize=(10, 4))
-    plt.title(title)
-    plt.plot(signal)
-    plt.show()
-    
-def plot_in_vs_out(signal_in, signal_out, title="Input vs Output signals"):
-    plt.figure(figsize=(10, 4))
-    plt.title(title)
-    plt.plot(signal_in, label='Input Signal')
-    plt.plot(signal_out, label='Output Signal')
-    plt.legend()
-    plt.show()

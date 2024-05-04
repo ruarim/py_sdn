@@ -4,7 +4,7 @@
 from source import Source
 from point_3D import Point3D
 
-# shoebox reflecftion points
+# shoebox reflecftion points - for now this is over simplified
 def find_reflections(room: list[int], source_loc: Point3D):
     reflections = [
         Point3D(source_loc.x, source_loc.y, room[2]), # ceiling - source x, y room.z

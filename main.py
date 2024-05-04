@@ -8,9 +8,11 @@ from config import (
 # classes and utilites
 from point_3D import Point3D
 from network import Network
-from utils import write_array_to_wav, plot_signal, plot_in_vs_out
+from utils import write_array_to_wav
 from reflections import find_reflections
 from signals import test_signal, zeros, stack
+from plot import plot_signal, plot_in_vs_out, plot_frequnecy_response
+from evaluation import T60_evaluation
 
 # setup the delay network
 source_location = Point3D(SOURCE_LOC[0], SOURCE_LOC[1], SOURCE_LOC[2])
@@ -41,6 +43,7 @@ for c in range(channels):
         sample = signal_in[s][c]
         sample_out = sdn.process(sample)  
         # model mic orientation with left right gain
+        # use microphone array instead
         level = CHANNEL_LEVELS[c]
         signal_out[s][c] = sample_out * level
         
@@ -52,6 +55,13 @@ if(OUTPUT_TO_FILE):
 
 if(PLOT):
     print("plotting...")
-    plot_signal(signal_in, title="Input signal")
-    plot_signal(signal_out, title=f"Room Dimensions: {ROOM_DIMS}, Source: {SOURCE_LOC}, Mic: {MIC_LOC}, wall absorption: {WALL_ABSORPTION}")
-    plot_in_vs_out(signal_in, signal_out)
+    # get mono signal for evaluation       
+    mono_in = [s[0] for s in signal_in]
+    mono_out = [s[0] for s in signal_out]
+    # get sabine / eyring T60 values
+    sabine, eyring = T60_evaluation(ROOM_DIMS, WALL_ABSORPTION)
+    config_params = f"Room Dimensions: {ROOM_DIMS}, Source: {SOURCE_LOC}, Mic: {MIC_LOC}, wall absorption: {WALL_ABSORPTION}"
+    plot_signal(mono_in, title="Input signal")
+    plot_signal(mono_out, title=config_params)
+    plot_in_vs_out(mono_in, mono_out, sabine, FS)
+    plot_frequnecy_response(mono_out, title=config_params)
