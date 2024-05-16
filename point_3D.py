@@ -6,3 +6,4 @@ class Point3D:
     
     def less_than(self, x, y, z):
         return self.x < x and self.y < y and self.z < z
+    

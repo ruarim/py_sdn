@@ -21,7 +21,7 @@ def plot_in_vs_out(signal_in, signal_out, title="Input vs Output signals"):
     plt.show()
     
 def plot_T60(signal_out, sabine_T60, eyring_T60, fs, title="T60"):
-    signal_out_db = linear_to_dB(np.abs(signal_out))
+    signal_out_db = linear_to_dB_norm(np.abs(signal_out))
     minus_60dB = max(signal_out_db) - 60 # ??
     plt.figure(figsize=(10, 4))
     plt.title(title)
@@ -29,23 +29,25 @@ def plot_T60(signal_out, sabine_T60, eyring_T60, fs, title="T60"):
     plt.vlines(sabine_T60 * fs, ymin=min(signal_out_db), ymax=max(signal_out_db), color='g', linestyle='--', label='T60 Sabine: {} Secs'.format(sabine_T60))
     plt.vlines(eyring_T60 * fs, ymin=min(signal_out_db), ymax=max(signal_out_db), color='y', linestyle='--', label='T60 Eyring: {} Secs'.format(eyring_T60))
     plt.hlines(minus_60dB, xmin=0, xmax=len(signal_out_db), color='r', linestyle='--', label='-60dB: {}dB'.format(minus_60dB))
-    plt.ylabel('Amplitude (dB)')
+    plt.ylabel('Amplitude (Normalised dB)')
     plt.xlabel('Samples')
     plt.legend()
     plt.show()
 
 def plot_frequnecy_response(y, title):
-    X = linear_to_dB(np.abs(np.fft.fft(y)))
+    X = linear_to_dB_norm(np.abs(np.fft.fft(y)))
     half_X = floor(len(X)/2)
     plt.figure(figsize=(10, 4))
     plt.title(title)
     plt.plot(X[:half_X])
-    plt.ylabel('Magnitude (dB)')
+    plt.ylabel('Magnitude (Normalised dB)')
     plt.xlabel('Frequency')
     plt.show()
 
 # normalised linear to dB conversion
-def linear_to_dB(x):
+def linear_to_dB_norm(x):
     epsilon = 1e-20
     x_max = np.max(x)
     return 20 * np.log10((x + epsilon) / x_max)
+
+# plot room dimension, source, mic, reflections

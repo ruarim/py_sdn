@@ -2,6 +2,9 @@
 # - t60 againt sabine and eyring formulas
 # - echo density
 # - mode density
+# - energy decay relief (energy decay at frequecy bands)
+# - frequency-dependent reverberation time
+# - early decay time
 
 # direct path component should be removed for evaluation
 

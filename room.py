@@ -2,25 +2,29 @@
 # and its frequency dependant and independant wall absorption coefficients
 
 from point_3D import Point3D
+from early_reflections import find_reflections
 
 class Room:
-    def __init__(self, x: float, y: float, z: float, source: Point3D, mic: Point3D): 
+    def __init__(self, dims: list[float], source: Point3D, mic: Point3D): 
         # only shoebox for now        
-        self.x = x
-        self.y = y
-        self.z = z
+        self.dims = dims
         self.valid_shape()
-        
         self.source = source
-        self.mic    = mic
+        self.mic = mic
         self.valid_source_mic()
+        self.early_reflections = find_reflections(self.dims, self.source)
         
-        # wall filters
-        # wall attenuation
+        # wall filter coefficient 
+        
+        # wall attenuation values
+        
     
     def valid_shape(self):
-        assert self.x > 0 and self.y > 0 and self.z > 0, "invalid room shape"
+        assert all(dim > 0 for dim in self.dims), "invalid room shape"
     
     def valid_source_mic(self):
-        assert self.source.less_than(self.x, self.y, self.z)
-        assert self.mic   .less_than(self.x, self.y, self.z)
+        assert self.source.less_than(self.dims[0], self.dims[1], self.dims[2])
+        assert self.mic.less_than(self.dims[0], self.dims[1], self.dims[2])
+    
+    def update_reflections(self):
+        self.early_reflections = find_reflections(self.dims, self.source)

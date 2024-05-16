@@ -8,8 +8,8 @@ from config import (
 # classes and utilites
 from point_3D import Point3D
 from network import Network
+from room import Room
 from utils import write_array_to_wav
-from reflections import find_reflections
 from signals import test_signal, zeros, stack
 from plot import plot_signal, plot_in_vs_out, plot_frequnecy_response, plot_T60
 from evaluation import T60_evaluation
@@ -17,8 +17,8 @@ from evaluation import T60_evaluation
 # setup the delay network
 source_location = Point3D(SOURCE_LOC[0], SOURCE_LOC[1], SOURCE_LOC[2])
 mic_location = Point3D(MIC_LOC[0], MIC_LOC[1], MIC_LOC[2])
-early_reflections = find_reflections(ROOM_DIMS, source_location)
-sdn = Network(early_reflections, source_location, mic_location, WALL_ABSORPTION, FS) 
+room = Room(ROOM_DIMS, source_location, mic_location) 
+sdn = Network(room.early_reflections, source_location, mic_location, WALL_ABSORPTION, FS) 
 
 # input / output arrays
 channels   = len(CHANNEL_LEVELS)
@@ -47,12 +47,13 @@ for c in range(channels):
         level = CHANNEL_LEVELS[c]
         signal_out[s][c] = sample_out * level
         
-# output and plot the results
+# output the result
 if(OUTPUT_TO_FILE): 
     print("writing to file...")
-    file_name = f"IR_junctions:{len(early_reflections)}_wall-attenuation:{WALL_ABSORPTION}_fs:{FS}_room:{ROOM_DIMS}_source:{SOURCE_LOC}_mic:{MIC_LOC}"
+    file_name = f"IR_junctions:{len(sdn.junctions)}_wall-attenuation:{WALL_ABSORPTION}_fs:{FS}_room:{ROOM_DIMS}_source:{SOURCE_LOC}_mic:{MIC_LOC}"
     write_array_to_wav(file_name, signal_out, FS)
 
+# plot the result
 if(PLOT):
     print("plotting...")
     # get mono signal for evaluation       
@@ -61,8 +62,8 @@ if(PLOT):
     # get sabine / eyring T60 values
     sabine, eyring = T60_evaluation(ROOM_DIMS, WALL_ABSORPTION)
     config_params = f"Room Dimensions: {ROOM_DIMS}, Source: {SOURCE_LOC}, Mic: {MIC_LOC}, wall absorption: {WALL_ABSORPTION}"
-    plot_signal(mono_in, title="Input signal")
-    plot_signal(mono_out, title=config_params) 
+    # plot_signal(mono_in, title="Input signal")
+    # plot_signal(mono_out, title=config_params)
     plot_in_vs_out(mono_in, mono_out)
     plot_T60(mono_out, sabine, eyring, FS, title="T60 - " + config_params)
     plot_frequnecy_response(mono_out, title=config_params)
