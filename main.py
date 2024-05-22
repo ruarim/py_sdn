@@ -25,7 +25,7 @@ source_location = Point3D(SOURCE_LOC[0], SOURCE_LOC[1], SOURCE_LOC[2])
 mic_location = Point3D(MIC_LOC[0], MIC_LOC[1], MIC_LOC[2])
 room = Room(ROOM_DIMS, source_location, mic_location) 
 sdn = Network(room.early_reflections, source_location, mic_location, WALL_ABSORPTION, FS) 
-setup_time = setup_performance.time()
+setup_time = setup_performance.get_time()
 
 # input / output arrays
 channels = len(CHANNEL_LEVELS)
@@ -53,14 +53,17 @@ for c in range(channels):
         level = CHANNEL_LEVELS[c]
         signal_out[s][c] = sample_out * level
 
-simulation_time = simulation_performance.time()
-total_runtime = total_performance.time()
+simulation_time = simulation_performance.get_time()
+total_runtime = total_performance.get_time()
+is_real_time, is_real_time_speedup = simulation_performance.is_real_time()
 
 # show total run time
 if TIMER:
     print(f"RUN TIME: {total_runtime}")
     print(f"SETUP TIME: {setup_time}")
     print(f"SIMULATION TIME: {simulation_time}")
+    print(f"IS REAL TIME: {is_real_time}")
+    print(f"IS REAL TIME WITH 10x SPEEDUP: {is_real_time_speedup}")
     
 # output the result
 if OUTPUT_TO_FILE: 
