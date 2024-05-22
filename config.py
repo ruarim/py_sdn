@@ -22,4 +22,5 @@ FILE_NAME = "Clap 808 Color 03.wav"
 
 # outputs
 OUTPUT_TO_FILE = False
-PLOT = True
+PLOT = False
+TIMER=True
