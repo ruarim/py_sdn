@@ -7,13 +7,13 @@ from config import (
 )
 
 # classes and utilites
-from point_3D import Point3D
+from utils.vec3 import Vec3
 from network import Network
 from room import Room
-from utils import write_array_to_wav
-from signals import test_signal, zeros, stack
-from plot import plot_signal, plot_in_vs_out, plot_frequnecy_response, plot_T60
-from evaluation import T60_evaluation
+from utils.file import write_array_to_wav
+from utils.signals import test_signal, zeros, stack
+from utils.plot import plot_signal, plot_in_vs_out, plot_frequnecy_response, plot_T60
+from evaluation import sabine_eyring_t60, calc_T60
 from performance import Performance
 
 # start total runtime and setup timers
@@ -21,8 +21,8 @@ total_performance = Performance()
 setup_performance = Performance()
 
 # setup the delay network
-source_location = Point3D(SOURCE_LOC[0], SOURCE_LOC[1], SOURCE_LOC[2])
-mic_location = Point3D(MIC_LOC[0], MIC_LOC[1], MIC_LOC[2])
+source_location = Vec3(SOURCE_LOC[0], SOURCE_LOC[1], SOURCE_LOC[2])
+mic_location = Vec3(MIC_LOC[0], MIC_LOC[1], MIC_LOC[2])
 room = Room(ROOM_DIMS, source_location, mic_location) 
 sdn = Network(room.early_reflections, source_location, mic_location, WALL_ABSORPTION, FS) 
 setup_time = setup_performance.get_time()
@@ -59,9 +59,9 @@ is_real_time, is_real_time_speedup = simulation_performance.is_real_time()
 
 # show total run time
 if TIMER:
-    print(f"RUN TIME: {total_runtime}")
-    print(f"SETUP TIME: {setup_time}")
-    print(f"SIMULATION TIME: {simulation_time}")
+    print(f"RUN TIME: {total_runtime} Secs")
+    print(f"SETUP TIME: {setup_time} Secs")
+    print(f"SIMULATION TIME: {simulation_time} Secs")
     print(f"IS REAL TIME: {is_real_time}")
     print(f"IS REAL TIME WITH 10x SPEEDUP: {is_real_time_speedup}")
     
@@ -78,10 +78,13 @@ if PLOT:
     mono_in = [s[0] for s in signal_in]
     mono_out = [s[0] for s in signal_out]
     # get sabine / eyring T60 values
-    sabine, eyring = T60_evaluation(ROOM_DIMS, WALL_ABSORPTION)
+    sabine, eyring = sabine_eyring_t60(ROOM_DIMS, WALL_ABSORPTION)
     config_params = f"Room Dimensions: {ROOM_DIMS}, Source: {SOURCE_LOC}, Mic: {MIC_LOC}, wall absorption: {WALL_ABSORPTION}"
     # plot_signal(mono_in, title="Input signal")
     # plot_signal(mono_out, title=config_params)
     plot_in_vs_out(mono_in, mono_out)
     plot_T60(mono_out, sabine, eyring, FS, title="T60 - " + config_params)
     plot_frequnecy_response(mono_out, title=config_params)
+    # get model rt60 and compare to sabine and eyring
+    model_t60 = calc_T60(mono_out, FS, sabine, plot=True)
+    print(model_t60, sabine)

@@ -3,9 +3,9 @@
 #                                  --[wall filter]->[send sample to receiver]->[delay]->[add-sample from source]-->
 #             <scattering junction>                                                                                 <scattering junction>
 #                                  <--[add sample from source]<-[delay]<-[send sample to receiver]<-[wall filter]--
-from delay_line import DelayLine
+from utils.delay_line import DelayLine
 from config import FS, SPEED_OF_SOUND
-from point_3D import Point3D
+from utils.vec3 import Vec3
 from math import sqrt, floor
 
 # currently adding typing to this class is limited by circular imports
@@ -39,10 +39,10 @@ class PropigationLine:
     def distance_to_delay(self):
         return floor(self.fs * (self.distance / self.c))
     
-    def vector_diff(self, point_a: Point3D, point_b: Point3D): 
+    def vector_diff(self, point_a: Vec3, point_b: Vec3): 
         x_diff = point_a.x - point_b.x
         y_diff = point_a.y - point_b.y
         z_diff = point_a.z - point_b.z
-        return Point3D(x_diff, y_diff, z_diff)
+        return Vec3(x_diff, y_diff, z_diff)
     
     # def update_distance()

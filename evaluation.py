@@ -9,6 +9,7 @@
 # direct path component should be removed for evaluation
 
 import numpy as np
+from utils.rt60 import measure_rt60
 
 """
     Calculate the T60 reverberation time of the SDN simulation in seconds.
@@ -19,9 +20,9 @@ import numpy as np
     Returns:
     T60 (float): Reverberation time in seconds.
 """
-def calc_T60():
-    pass 
-
+def calc_T60(h, fs, compare, plot=False):
+    t60 = measure_rt60(h, fs, rt60_tgt=compare, plot=plot)
+    return t60
 
 """
     Calculate the Volume of a room.
@@ -97,7 +98,7 @@ def eyring_T60(V: float, A, alpha):
     
     return (scaling_factor * V) / (-total_area * np.log(1 - total_absorption / total_area)) # is "-total_area" correct
 
-def T60_evaluation(room_dims, alpha):
+def sabine_eyring_t60(room_dims, alpha):
     V = calc_V(room_dims)
     A = calc_A(room_dims)
 

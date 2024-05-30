@@ -1,0 +1,11 @@
+### To-do
+- [ ] Source/Mic directivity.
+- [ ] Geometric Tracing Model.
+- [ ] Frequency dependent absorption.
+- [ ] RIR rt60 calculation.
+- [ ] Comparision to pyroomacoustics
+- [ ] Room visualisation
+- [ ] Higher-Order reflections.
+- [ ] Physically-motivated scattering using BRDF.
+- [ ] Comparision to pyroomacoustics.
+- [ ] Frequency dependant air absorption.

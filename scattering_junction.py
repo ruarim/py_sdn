@@ -1,12 +1,12 @@
 import numpy as np
 from math import sqrt
-from point_3D import Point3D
+from utils.vec3 import Vec3
 from source import Source
 from mic import Mic
 
 class ScatteringJunction:    
     # add arg types
-    def __init__(self, location: Point3D, source: Source, mic: Mic, alpha=1.0):
+    def __init__(self, location: Vec3, source: Source, mic: Mic, alpha=1.0):
         self.propigation_in = []
         self.propigation_out = []
         self.location = location

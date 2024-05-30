@@ -1,11 +1,11 @@
 # contains the delay from junctions to microphone
 # and models microphone directivity pattern
 
-from point_3D import Point3D
+from utils.vec3 import Vec3
 from propigation_line import PropigationLine
 
 class Mic:  
-    def __init__(self, location: Point3D):
+    def __init__(self, location: Vec3):
         self.propigation_lines: list[PropigationLine] = [] # junction -> mic
         self.direct_path: PropigationLine = None # source -> mic
         self.location = location

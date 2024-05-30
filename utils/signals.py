@@ -1,7 +1,7 @@
 import numpy as np
 from math import floor
 from random import uniform
-from utils import read_wav_file
+from utils.file import read_wav_file
 
 def zeros(length):
     return np.zeros(length, dtype=np.float32) 
