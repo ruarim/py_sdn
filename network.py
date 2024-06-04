@@ -5,13 +5,14 @@ from scattering_junction import ScatteringJunction
 
 
 class Network:
-    def __init__(self, early_reflections, source_location, mic_location, wall_absorption, fs):
+    def __init__(self, early_reflections, source_location, mic_location, wall_absorption, fs, enable_direct_path):
         self.M = len(early_reflections)
         
         self.source = Source(source_location)
         self.mic = Mic(mic_location)
         
         # create direct path
+        self.enable_direct_path = enable_direct_path
         self.direct_path = PropigationLine(start=self.source, end=self.mic, fs=fs)
         self.direct_path.attenuation = min(1 / self.direct_path.distance, 1)
         self.source.add_direct_path(self.direct_path)
@@ -70,5 +71,7 @@ class Network:
         # model microphone directivity pattern here
         # mic_out = mic.process(samples_out)
         
-        return sum(samples_out) + self.direct_path.sample_out()
+        output_scaled = sum(samples_out) * (2 / (self.M - 1))
+        if(self.enable_direct_path): return output_scaled + self.direct_path.sample_out()
+        else: return output_scaled
         

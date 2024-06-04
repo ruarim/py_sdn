@@ -1,12 +1,12 @@
 import numpy as np
 from math import sqrt
-from utils.vec3 import Vec3
+from utils.point3 import Point3
 from source import Source
 from mic import Mic
 
 class ScatteringJunction:    
     # add arg types
-    def __init__(self, location: Vec3, source: Source, mic: Mic, alpha=1.0):
+    def __init__(self, location: Point3, source: Source, mic: Mic, alpha=1.0):
         self.propigation_in = []
         self.propigation_out = []
         self.location = location
@@ -21,6 +21,8 @@ class ScatteringJunction:
     def scatter_in(self, source_sample):
         # get reflection order
         M = len(self.propigation_out)
+        # scale source
+        source_sample_scaled = source_sample * 0.5
         # read samples in from neighbours
         samples_in = [s.sample_out() for s in self.propigation_in]
         # output samples
@@ -30,7 +32,7 @@ class ScatteringJunction:
         for i in range(M): # output prop lines
             sample_out = 0.0
             for j in range(M): # input prop lines
-                sample_in = samples_in[j] + (source_sample / 2)
+                sample_in = samples_in[j] + source_sample_scaled
                 # isotropic scattering coefficient
                 if i == j: a = 2 / M - 1.0 # less to diagonal
                 else: a = 2 / M

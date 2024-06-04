@@ -11,7 +11,26 @@
 import numpy as np
 from utils.rt60 import measure_rt60
 
-"""
+
+
+def truncate_list(arr):
+    """
+    Truncate the list so that it starts at the first non-zero value using NumPy.
+    
+    Parameters:
+    lst (list): The list to be truncated.
+
+    Returns:
+    list: The truncated list.
+    """
+    
+    # Find the index of the first non-zero value
+    first_non_zero_index = np.argmax(arr != 0)
+    # Return the list starting from the first non-zero value
+    return arr[first_non_zero_index:]
+
+def calc_T60(h, fs, compare, plot=False):
+    """
     Calculate the T60 reverberation time of the SDN simulation in seconds.
     
     Parameters:
@@ -19,12 +38,12 @@ from utils.rt60 import measure_rt60
         
     Returns:
     T60 (float): Reverberation time in seconds.
-"""
-def calc_T60(h, fs, compare, plot=False):
-    t60 = measure_rt60(h, fs, rt60_tgt=compare, plot=plot)
+    """
+    t60 = measure_rt60(h, fs, plot=plot)
     return t60
 
-"""
+def calc_V(dims):
+    """
     Calculate the Volume of a room.
     
     Parameters:
@@ -32,14 +51,14 @@ def calc_T60(h, fs, compare, plot=False):
         
     Returns:
     V (float): Volume of the room in cubic meters.
-"""
-def calc_V(dims):
+    """
     if len(dims) != 3 or any(dim <= 0 for dim in dims):
         raise ValueError("Invalid room dimensions provided.")
     
     return dims[0] * dims[1] * dims[2]
 
-"""
+def calc_A(dims):
+    """
     Calculate the surface area of walls in a room.
     
     Parameters:
@@ -47,8 +66,7 @@ def calc_V(dims):
         
     Returns:
     A (numpy array): Array of surface areas of materials in square meters.
-"""
-def calc_A(dims):
+    """
     if len(dims) != 3 or any(dim <= 0 for dim in dims):
         raise ValueError("Invalid wall dimensions provided.")
     

@@ -116,6 +116,8 @@ def measure_rt60(h, fs=1, decay_db=60, energy_thres=0.95, plot=False, rt60_tgt=N
 
         T = get_time(power_db, fs)
 
+        plt.figure(figsize=(10, 4))
+        
         # plot power and energy
         plt.plot(get_time(energy_db, fs), energy_db, label="Energy")
 
@@ -130,6 +132,5 @@ def measure_rt60(h, fs=1, decay_db=60, energy_thres=0.95, plot=False, rt60_tgt=N
             plt.vlines(rt60_tgt, energy_db_min, 0, label="Target RT60")
 
         plt.legend()
-        plt.show()
 
     return est_rt60

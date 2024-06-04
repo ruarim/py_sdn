@@ -1,22 +1,22 @@
 # defines the geometry of a room
 # and its frequency dependant and independant wall absorption coefficients
 
-from utils.vec3 import Vec3
+from utils.point3 import Point3
 from early_reflections import find_reflections
 
 class Room:
-    def __init__(self, dims: list[float], source: Vec3, mic: Vec3): 
+    def __init__(self, dims: list[float], source: Point3, mic: Point3, reflection_order: int): 
         # only shoebox for now        
         self.dims = dims
         self.valid_shape()
         self.source = source
         self.mic = mic
         self.valid_source_mic()
-        self.early_reflections = find_reflections(self.dims, self.source) # inject instead?
+        self.early_reflections = find_reflections(self.dims, self.source.to_list(), self.mic.to_list(), reflection_order)
         
-        # wall filter coefficient
+        # wall attenuation values array
         
-        # wall attenuation values
+        # wall filter coefficient array
         
     
     def valid_shape(self):

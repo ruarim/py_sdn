@@ -5,7 +5,7 @@
 #                                  <--[add sample from source]<-[delay]<-[send sample to receiver]<-[wall filter]--
 from utils.delay_line import DelayLine
 from config import FS, SPEED_OF_SOUND
-from utils.vec3 import Vec3
+from utils.point3 import Point3
 from math import sqrt, floor
 
 # currently adding typing to this class is limited by circular imports
@@ -20,7 +20,7 @@ class PropigationLine:
         self.distance = self.euclid_dist()
         self.attenuation = 1.0
         
-        # filter for frequnecy dependant absorption
+        # filter for frequnecy dependant air absorption
             
     def sample_in(self, sample: float):
         self.delay_line.push(sample)
@@ -28,7 +28,7 @@ class PropigationLine:
     def sample_out(self) -> float:
         delay = self.distance_to_delay()
         return self.delay_line.read(delay) * self.attenuation 
-            
+    
     # get the euclidean distance between the start and end junctions
     def euclid_dist(self):
         diff = self.vector_diff(self.start.location, self.end.location)
@@ -39,10 +39,10 @@ class PropigationLine:
     def distance_to_delay(self):
         return floor(self.fs * (self.distance / self.c))
     
-    def vector_diff(self, point_a: Vec3, point_b: Vec3): 
+    def vector_diff(self, point_a: Point3, point_b: Point3): 
         x_diff = point_a.x - point_b.x
         y_diff = point_a.y - point_b.y
         z_diff = point_a.z - point_b.z
-        return Vec3(x_diff, y_diff, z_diff)
+        return Point3(x_diff, y_diff, z_diff)
     
     # def update_distance()
