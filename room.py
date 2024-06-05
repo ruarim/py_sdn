@@ -12,7 +12,8 @@ class Room:
         self.source = source
         self.mic = mic
         self.valid_source_mic()
-        self.early_reflections = find_reflections(self.dims, self.source.to_list(), self.mic.to_list(), reflection_order)
+        er = find_reflections(self.dims, self.source.to_list(), self.mic.to_list(), reflection_order)
+        self.early_reflections = [Point3(r[0],r[1],r[2]) for r in er]
         
         # wall attenuation values array
         

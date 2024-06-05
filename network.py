@@ -26,7 +26,7 @@ class Network:
             self.junctions.append(junction)
         
         # connect the scattering junctions with waveguides (bidirectional delay lines)
-        for i in range(self.M):    
+        for i in range(self.M):   
             # connect source to junction
             source_line = PropigationLine(start=self.source, end=self.junctions[i], fs=fs)
             source_attenuation = 1 / source_line.distance
@@ -34,7 +34,7 @@ class Network:
             self.source.add_to_junction(source_line)
             
             # connect junction to mic
-            mic_line = PropigationLine(start=self.junctions[i], end=self.mic, fs=fs)
+            mic_line = PropigationLine(start=self.junctions[i], end=self.mic, fs=fs, offset=-1)
             mic_attenuation = 1 / (1 + (mic_line.distance / source_line.distance))
             mic_line.attenuation = min(mic_attenuation, 1)
             self.mic.add_from_junction(mic_line)
@@ -71,7 +71,7 @@ class Network:
         # model microphone directivity pattern here
         # mic_out = mic.process(samples_out)
         
-        output_scaled = sum(samples_out) * (2 / (self.M - 1))
+        output_scaled = sum(samples_out) # * (2 / (self.M - 1))
         if(self.enable_direct_path): return output_scaled + self.direct_path.sample_out()
         else: return output_scaled
         

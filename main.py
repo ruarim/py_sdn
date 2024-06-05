@@ -16,7 +16,7 @@ from network import Network
 from room import Room
 from utils.file import write_array_to_wav
 from utils.signals import test_signal, zeros, stack
-from utils.plot import plot_signal
+from utils.plot import plot_signal, plot_room
 from evaluation import sabine_eyring_t60, calc_T60, truncate_list
 from performance import Performance
 
@@ -56,7 +56,7 @@ for s in range(len(signal_in)):
     # model mic orientation with left right gain - use microphone array instead
     signal_out[s] = sample_out
     
-    print(f"processing sample: {s}")
+    # print(f"processing sample: {s}")
 
 simulation_time = simulation_performance.get_time()
 total_runtime = total_performance.get_time()
@@ -74,15 +74,18 @@ if TIMER:
 if OUTPUT_TO_FILE: 
     print("writing to file...")
     file_name = f"IR_junctions:{len(sdn.junctions)}_wall-attenuation:{WALL_ABSORPTION}_fs:{FS}_room:{ROOM_DIMS}_source:{SOURCE_LOC}_mic:{MIC_LOC}_order:{ER_ORDER}"
-    write_array_to_wav(file_name, signal_out, FS)
+    write_array_to_wav(file_name, signal_out / np.max(signal_out), FS)
 
 # plot the result
 if PLOT:
     print("plotting...")
+    
+    plot_room(ROOM_DIMS, SOURCE_LOC, MIC_LOC, [er.to_list() for er in room.early_reflections])
+    
     # get mono signal for evaluation       
     mono_in = signal_in
     rir = signal_out
-    rir = truncate_list(rir)
+    # rir = truncate_list(rir)
     
     # get sabine / eyring T60 values
     sabine, eyring = sabine_eyring_t60(ROOM_DIMS, WALL_ABSORPTION)

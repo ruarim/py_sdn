@@ -11,13 +11,14 @@ from math import sqrt, floor
 # currently adding typing to this class is limited by circular imports
 # possibly create types / interfaces module
 class PropigationLine:    
-    def __init__(self, start, end, fs=FS, c=SPEED_OF_SOUND):
+    def __init__(self, start, end, fs=FS, c=SPEED_OF_SOUND, offset=0):
         self.fs = fs
         self.c = c
         self.delay_line = DelayLine()
         self.start = start
         self.end = end
         self.distance = self.euclid_dist()
+        self.offset = offset
         self.attenuation = 1.0
         
         # filter for frequnecy dependant air absorption
@@ -27,7 +28,7 @@ class PropigationLine:
         
     def sample_out(self) -> float:
         delay = self.distance_to_delay()
-        return self.delay_line.read(delay) * self.attenuation 
+        return self.delay_line.read(delay + self.offset) * self.attenuation 
     
     # get the euclidean distance between the start and end junctions
     def euclid_dist(self):

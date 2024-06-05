@@ -3,15 +3,16 @@ from matplotlib import pyplot as plt
 from math import floor
 from evaluation import truncate_list
 from config import FS
+from mpl_toolkits.mplot3d import Axes3D
 
 def plot_signal(signal, title, xlim=None, fs=FS):
     time_vec = np.arange(signal.shape[0]) / fs
     plt.figure(figsize=(10, 4))
     plt.title(title)
-    plt.plot(time_vec, signal)
+    plt.plot(signal)
     plt.ylabel('Amplitude Linear')
     plt.xlabel('Samples')
-    if(xlim != None): plt.xlim(xlim)
+    # if(xlim != None): plt.xlim(xlim)
     
 def plot_compare(signals, signals_labels, title="Input vs Output signals"):
     plt.figure(figsize=(10, 4))
@@ -51,3 +52,47 @@ def linear_to_dB_norm(x):
     return 20 * np.log10((x + epsilon) / x_max)
 
 # plot room dimension, source, mic, reflections
+# Function to plot the room and positions
+def plot_room(room_dimensions, source_pos, mic_pos, reflections):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Room dimensions
+    room_x, room_y, room_z = room_dimensions
+
+    # Plot room
+    # Creating the walls, floor, and ceiling
+    ax.plot([0, room_x], [0, 0], [0, 0], color='k')
+    ax.plot([0, room_x], [room_y, room_y], [0, 0], color='k')
+    ax.plot([0, room_x], [0, 0], [room_z, room_z], color='k')
+    ax.plot([0, room_x], [room_y, room_y], [room_z, room_z], color='k')
+    ax.plot([0, 0], [0, room_y], [0, 0], color='k')
+    ax.plot([room_x, room_x], [0, room_y], [0, 0], color='k')
+    ax.plot([0, 0], [0, room_y], [room_z, room_z], color='k')
+    ax.plot([room_x, room_x], [0, room_y], [room_z, room_z], color='k')
+    ax.plot([0, 0], [0, 0], [0, room_z], color='k')
+    ax.plot([room_x, room_x], [0, 0], [0, room_z], color='k')
+    ax.plot([0, 0], [room_y, room_y], [0, room_z], color='k')
+    ax.plot([room_x, room_x], [room_y, room_y], [0, room_z], color='k')
+
+    # Plot source position
+    ax.scatter(source_pos[0], source_pos[1], source_pos[2], color='r', label='Source')
+
+    # Plot microphone position
+    ax.scatter(mic_pos[0], mic_pos[1], mic_pos[2], color='b', label='Microphone')
+
+    # Plot reflections
+    reflections = np.array(reflections)
+    if reflections.size > 0:
+        ax.scatter(reflections[:, 0], reflections[:, 1], reflections[:, 2], color='g', label='Early Reflections')
+
+    # Labels and limits
+    ax.set_xlabel('X axis')
+    ax.set_ylabel('Y axis')
+    ax.set_zlabel('Z axis')
+    ax.set_xlim([0, room_x])
+    ax.set_ylim([0, room_y])
+    ax.set_zlim([0, room_z])
+
+    ax.legend()
+    plt.show()
