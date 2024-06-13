@@ -1,24 +1,24 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from math import floor
-from evaluation import truncate_list
+from evaluation.helpers import truncate_list
 from config import FS
 from mpl_toolkits.mplot3d import Axes3D
 
 def plot_signal(signal, title, xlim=None, fs=FS):
-    time_vec = np.arange(signal.shape[0]) / fs
+    time_vec = np.arange(signal.shape[0]) / (fs / 1000)
     plt.figure(figsize=(10, 4))
     plt.title(title)
-    plt.plot(signal)
+    plt.plot(time_vec, signal)
     plt.ylabel('Amplitude Linear')
-    plt.xlabel('Samples')
-    # if(xlim != None): plt.xlim(xlim)
+    plt.xlabel('Time(ms)')
+    if(xlim != None): plt.xlim(xlim)
     
-def plot_compare(signals, signals_labels, title="Input vs Output signals"):
+def plot_comparision(signals, title="Comparison"):
     plt.figure(figsize=(10, 4))
     plt.title(title)
-    for i in range(signals):
-        plt.plot(signals[i], label=signals_labels[i])
+    for key in signals:
+        plt.plot(signals[key], label=key)
     plt.ylabel('Amplitude Linear')
     plt.xlabel('Samples')
     plt.legend()
@@ -52,24 +52,27 @@ def linear_to_dB_norm(x):
     return 20 * np.log10((x + epsilon) / x_max)
 
 # plot room dimension, source, mic, reflections
-# Function to plot the room and positions
 def plot_room(room_dimensions, source_pos, mic_pos, reflections):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
     # Room dimensions
     room_x, room_y, room_z = room_dimensions
-
-    # Plot room
-    # Creating the walls, floor, and ceiling
+    
+    # Plotting the room
+    # Floor
     ax.plot([0, room_x], [0, 0], [0, 0], color='k')
     ax.plot([0, room_x], [room_y, room_y], [0, 0], color='k')
-    ax.plot([0, room_x], [0, 0], [room_z, room_z], color='k')
-    ax.plot([0, room_x], [room_y, room_y], [room_z, room_z], color='k')
     ax.plot([0, 0], [0, room_y], [0, 0], color='k')
     ax.plot([room_x, room_x], [0, room_y], [0, 0], color='k')
+
+    # Ceiling
+    ax.plot([0, room_x], [0, 0], [room_z, room_z], color='k')
+    ax.plot([0, room_x], [room_y, room_y], [room_z, room_z], color='k')
     ax.plot([0, 0], [0, room_y], [room_z, room_z], color='k')
     ax.plot([room_x, room_x], [0, room_y], [room_z, room_z], color='k')
+
+    # Vertical edges
     ax.plot([0, 0], [0, 0], [0, room_z], color='k')
     ax.plot([room_x, room_x], [0, 0], [0, room_z], color='k')
     ax.plot([0, 0], [room_y, room_y], [0, room_z], color='k')
@@ -94,5 +97,12 @@ def plot_room(room_dimensions, source_pos, mic_pos, reflections):
     ax.set_ylim([0, room_y])
     ax.set_zlim([0, room_z])
 
+    # Manually set tick marks for even scaling
+    ax.set_xticks(np.arange(0, room_x + 1, 1))
+    ax.set_yticks(np.arange(0, room_y + 1, 1))
+    ax.set_zticks(np.arange(0, room_z + 1, 1))
+
+    # Set aspect ratio to be equal
+    ax.set_box_aspect([room_x, room_y, room_z])  # Aspect ratio is 1:1:1
+
     ax.legend()
-    plt.show()

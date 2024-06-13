@@ -90,5 +90,4 @@ def find_reflections(room_dim, source, receiver, reflection_order):
         elif img_src[2] > room_dim[2]:
             reflection_points.append(find_intersection(img_src, receiver, 'z', room_dim[2]))
     
-    print(reflection_points)
     return reflection_points

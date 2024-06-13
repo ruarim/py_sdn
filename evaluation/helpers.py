@@ -9,11 +9,11 @@
 # direct path component should be removed for evaluation
 
 import numpy as np
-from utils.rt60 import measure_rt60
+from evaluation.rt60 import measure_rt60
 
 
 
-def truncate_list(arr):
+def truncate_list(arr, at_value=0):
     """
     Truncate the list so that it starts at the first non-zero value using NumPy.
     
@@ -24,8 +24,8 @@ def truncate_list(arr):
     list: The truncated list.
     """
     
-    # Find the index of the first non-zero value
-    first_non_zero_index = np.argmax(arr != 0)
+    # Find the index of the first value given value
+    first_non_zero_index = np.argmax(arr == at_value)
     # Return the list starting from the first non-zero value
     return arr[first_non_zero_index:]
 

@@ -2,6 +2,7 @@ import numpy as np
 from math import floor
 from random import uniform
 from utils.file import read_wav_file
+from config import SIGNAL_LENGTH, FS
 
 def zeros(length):
     return np.zeros(length, dtype=np.float32) 
@@ -29,7 +30,7 @@ def file(data_dir, file_name):
     return data
 
 # return fs depenant on signal type 
-def test_signal(choice, signal_length, fs,burst_secs=0.1, gain=1.0, data_dir="", file_name="", channels=1):
+def test_signal(choice, signal_length=SIGNAL_LENGTH, fs=FS,burst_secs=0.1, gain=1.0, data_dir="", file_name="", channels=1):
     if choice == "unit": 
         signal = unit_impulse(signal_length, gain)
     if choice == "noise": 

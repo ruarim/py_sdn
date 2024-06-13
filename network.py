@@ -71,7 +71,7 @@ class Network:
         # model microphone directivity pattern here
         # mic_out = mic.process(samples_out)
         
-        output_scaled = sum(samples_out) # * (2 / (self.M - 1))
-        if(self.enable_direct_path): return output_scaled + self.direct_path.sample_out()
-        else: return output_scaled
+        output_summed = sum(samples_out) # * (2 / (self.M - 1))
+        if(self.enable_direct_path): return output_summed + self.direct_path.sample_out()
+        else: return output_summed
         
